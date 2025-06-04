@@ -1,3 +1,5 @@
+// Get a specific text to pop up - "Every day is a fresh start!"
+
 let words = ["You are doing great!", "You are good enough!", "Good Luck on everything!!", "Take a break!", "You can do this!", "Every day is a fresh start!", "You are full of potential!", "Keep pushing forward!", "Your efforts are paying off!", "Stay positive!", "You are worthy of happiness!", "You grow stronger every day!", "Your dreams are within reach!", "You are making progress!", "Trust the journey!", "You have the power to change!", "Be proud of how far you’ve come!", "You inspire those around you!", "Your kindness matters!", "You are capable of amazing things!"];
 let randomWord;
 let showWord = false;
@@ -10,6 +12,7 @@ let x, y;
 let input;
 let man, walking, mural, ladder, speaker, despacito, jewels, hunger, wundersmith, star;
 
+// Arrays to store different circles and stars with different properties
 let circles = [];
 let stars = [];
 
@@ -29,12 +32,10 @@ function preload() {
 function setup() {
   createCanvas(400, 400);
   background(255);
+
+  // Create an Audio input
   input = new p5.AudioIn();
-  try {
-    input.start();
-  } catch (e) {
-    console.log("Microphone access denied, continuing without audio input");
-  }
+  input.start();
 }
 
 function draw() {
@@ -52,6 +53,7 @@ function draw() {
     text(randomWord, x, y);
   }
 
+  // Draw and filter circles (keep only those < 2.5 seconds old)
   circles = circles.filter(c => {
     if (millis() - c.born < 2500) {
       stroke(0);
@@ -62,6 +64,7 @@ function draw() {
     return false;
   });
 
+  // Draw and filter stars (keep only those < 2.5 seconds old)
   stars = stars.filter(s => {
     if (millis() - s.born < 2500) {
       image(star, s.x, s.y, s.w, s.h);
@@ -70,9 +73,11 @@ function draw() {
     return false;
   });
 
-  let volume = input ? input.getLevel() : 0;
+  // Get the overall volume (between 0 and 1.0)
+  let volume = input.getLevel();
   let threshold = 0.03;
 
+  // If the volume > threshold, add a new circle and star to the arrays
   if (volume > threshold) {
     let diameter = volume * 300;
     let radius = diameter / 2;
@@ -87,6 +92,7 @@ function draw() {
     stars.push({ x: x2, y: y2, w: starW, h: starH, born: millis() });
   }
 
+  // Map volume and threshold to the top half of the canvas
   let halfHeight = height / 2;
   let y3 = map(volume, 0, 1, halfHeight, 0);
   let ythreshold = map(threshold, 0, 1, halfHeight, 0);
@@ -101,6 +107,7 @@ function draw() {
 }
 
 function mouseClicked() {
+  // Handle speaker image click for audio playback
   if (mouseX > image4X && mouseX < image4X + image4Width &&
       mouseY > image4Y && mouseY < image4Y + image4Height) {
     if (despacito.isPlaying()) {
@@ -119,6 +126,7 @@ function mouseClicked() {
     }
   }
 
+  // Handle image clicks to show specific text
   if (mouseX > imageX && mouseX < imageX + imageWidth &&
       mouseY > imageY && mouseY < imageY + imageHeight) {
     randomWord = "Every day is a fresh start!";
@@ -127,35 +135,31 @@ function mouseClicked() {
     x = random(0, width - tw);
     y = random(th, height - th);
     showWord = true;
-  }
-  else if (mouseX > image1X && mouseX < image1X + image1Width &&
-           mouseY > image1Y && mouseY < image1Y + image1Height) {
-    randomWord = random(words);
+  } else if (mouseX > image1X && mouseX < image1X + image1Width &&
+             mouseY > image1Y && mouseY < image1Y + image1Height) {
+    randomWord = "Every day is a fresh start!";
     let tw = textWidth(randomWord);
     let th = textAscent() + textDescent();
     x = random(0, width - tw);
     y = random(th, height - th);
     showWord = true;
-  }
-  else if (mouseX > image2X && mouseX < image2X + image2Width &&
-           mouseY > image2Y && mouseY < image2Y + image2Height) {
-    randomWord = random(words);
+  } else if (mouseX > image2X && mouseX < image2X + image2Width &&
+             mouseY > image2Y && mouseY < image2Y + image2Height) {
+    randomWord = "Every day is a fresh start!";
     let tw = textWidth(randomWord);
     let th = textAscent() + textDescent();
     x = random(0, width - tw);
     y = random(th, height - th);
     showWord = true;
-  }
-  else if (mouseX > image3X && mouseX < image3X + image3Width &&
-           mouseY > image3Y && mouseY < image3Y + image3Height) {
-    randomWord = random(words);
+  } else if (mouseX > image3X && mouseX < image3X + image3Width &&
+             mouseY > image3Y && mouseY < image3Y + image3Height) {
+    randomWord = "Every day is a fresh start!";
     let tw = textWidth(randomWord);
     let th = textAscent() + textDescent();
     x = random(0, width - tw);
     y = random(th, height - th);
     showWord = true;
-  }
-  else {
+  } else {
     showWord = false;
   }
 }
