@@ -8,6 +8,7 @@ let image3X = 180, image3Y = 210, image3Width = 160, image3Height = 180;
 let image4X = 350, image4Y = 300, image4Width = 50, image4Height = 100;
 let x, y;
 let input;
+let micStarted = false;
 let man, walking, mural, ladder, speaker, despacito, jewels, hunger, wundersmith, star;
 
 let circles = [];
@@ -32,14 +33,16 @@ function setup() {
   input = new p5.AudioIn();
   try {
     input.start();
+    micStarted = true;
     console.log("Microphone started successfully");
   } catch (e) {
     console.error("Microphone access failed:", e);
-    // Display error on canvas
-    fill(255, 0, 0);
-    textSize(12);
-    text("Microphone access denied. Circles/stars disabled.", 10, 380);
+    micStarted = false;
   }
+  // Display instructions
+  fill(0);
+  textSize(12);
+  text("Click images for messages, speaker for music. Press space for circles/stars if mic fails.", 10, 380);
 }
 
 function draw() {
@@ -75,9 +78,8 @@ function draw() {
     return false;
   });
 
-  let volume = input ? input.getLevel() : 0;
-  let threshold = 0.02; // Lowered threshold for better sensitivity
-  // Debug volume in console
+  let volume = micStarted ? input.getLevel() : 0;
+  let threshold = 0.015; // Further lowered for sensitivity
   console.log("Volume:", volume);
 
   if (volume > threshold) {
@@ -105,6 +107,13 @@ function draw() {
   rect(width - 20, y3, 20, halfHeight - y3);
   stroke(0);
   line(width - 20, ythreshold, width - 1, ythreshold);
+
+  // Show mic status
+  if (!micStarted) {
+    fill(255, 0, 0);
+    textSize(12);
+    text("Mic off. Press space for circles/stars.", 10, 360);
+  }
 }
 
 function mouseClicked() {
@@ -157,12 +166,28 @@ function mouseClicked() {
            mouseY > image3Y && mouseY < image3Y + image3Height) {
     randomWord = random(words);
     let tw = textWidth(randomWord);
-    let th = textAscent() + textDescent();
+    th = textAscent() + textDescent();
     x = random(0, width - tw);
     y = random(th, height - th);
     showWord = true;
   }
   else {
     showWord = false;
+  }
+}
+
+function keyPressed() {
+  if (key === ' ') {
+    let diameter = 50;
+    let radius = diameter / 2;
+    let x1 = random(radius, width - 20 - radius);
+    let y1 = random(radius, height - radius);
+    circles.push({ x: x1, y: y1, d: diameter, born: millis() });
+
+    let starW = 50;
+    let starH = 50;
+    let x2 = random(0, width - 20 - starW);
+    let y2 = random(0, height - starH);
+    stars.push({ x: x2, y: y2, w: starW, h: starH, born: millis() });
   }
 }
